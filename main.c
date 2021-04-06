@@ -26,7 +26,7 @@ int main()
     char existeTRA = 'f';
     char existeTRB = 'f';
 
-    static char dict[300000][100]; //Dict e uma Array de Strings, armazena todas as palavras do dicionario
+    char **dict; //Dict e uma Array de Strings, armazena todas as palavras do dicionario
 
     //Declaracao dos arquivos
     FILE *arqDict = NULL;
@@ -53,7 +53,7 @@ int main()
         {
         case (1): // Ler Arquivo Dicionario
                   // O(n), n = palavras no dicionario
-            case1(arqDict, &tamanho_dict, dict, &existeDict);
+            dict = case1(arqDict, &tamanho_dict, dict, &existeDict);
 
             // Alocacao de memoria
             ContA = (int *)calloc(tamanho_dict, sizeof(int));

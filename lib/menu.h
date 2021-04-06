@@ -26,7 +26,7 @@ void menu() // Imprime o menu
     separaTexto();
 }
 
-void case1(FILE *arqDict, int *tamanho_dict, char dict[][100], char *existeDict) /* Le o dicionario
+char** case1(FILE *arqDict, int *tamanho_dict, char **dict, char *existeDict) /* Le o dicionario
         Complexidade total case1 - O(n), n = numero de palavras no dicionario.
 
 */
@@ -43,23 +43,32 @@ void case1(FILE *arqDict, int *tamanho_dict, char dict[][100], char *existeDict)
     } while (erroArquivoInvalido(arqDict));
 
     *tamanho_dict = contaLinhas(arqDict); // Conta quantas linhas tem o arquivo que foi aberto
-    criarDict(arqDict, dict);            // Cria um dicionario (arquivo dict), complexidade O(n), n = palavras no dicionario.
+    
+    dict = (char **)malloc(*tamanho_dict * sizeof(char *));
+    for (int c = 0; c < *tamanho_dict; c++)
+    {
+        dict[c] = (char *)malloc(256 * sizeof(char));
+    }
+
+    criarDict(arqDict, dict, *tamanho_dict); // Cria um dicionario (arquivo dict), complexidade O(n), n = palavras no dicionario.
     *existeDict = 't';
 
     separaTexto();
     printf("O Dicionario '%s' foi aberto com sucesso.", nomeDicionario);
+
+    return dict;
 }
 
 void case2_3(FILE *referencia, FILE *bowTR, int tamanho_dict, int *Cont, /*Le o arquivo de referencia*/
-        char dict[][100], char existeDict, char *existeTR,char carac)
+             char **dict, char existeDict, char *existeTR, char carac)
 
-        /*
+/*
         Complexidade total Case2_3 - O(n + a), n = numero de palavras no dicionario,
                                                a = numero de palavras no arquivo de referencia. */
 {
     char nomeTR[50]; // Texto de Referencia A
 
-    if(carac == 'A')
+    if (carac == 'A')
     {
         printTitulo("Ler Texto de Referencia A (TRA)");
     }
@@ -71,7 +80,7 @@ void case2_3(FILE *referencia, FILE *bowTR, int tamanho_dict, int *Cont, /*Le o 
     if (existeDict == 'f')
     {
         printf("Leia um dicionario antes de ler um Texto de Referencia!");
-        return ;
+        return;
     }
 
     if (*existeTR == 't')
@@ -82,17 +91,17 @@ void case2_3(FILE *referencia, FILE *bowTR, int tamanho_dict, int *Cont, /*Le o 
 
     do // Scan diretorio/nome do arquivo
     {
-        printf("Informe o nome do Arquivo de Referencia %c : ",carac);
+        printf("Informe o nome do Arquivo de Referencia %c : ", carac);
         scanf(" %[^\n]s", &nomeTR);
         referencia = fopen(nomeTR, "r"); // Abertura do arquivo desejado
-    }while(erroArquivoInvalido(referencia)==true);
+    } while (erroArquivoInvalido(referencia) == true);
 
     separaTexto();
-    printf("O Texto de Referencia '%s' foi aberto com sucesso.\n",nomeTR);
+    printf("O Texto de Referencia '%s' foi aberto com sucesso.\n", nomeTR);
     printf("Contagem sendo efetuada, aguarde.");
 
     // Contagem das palavras contidas no dicionario
-    if(carac == 'A')
+    if (carac == 'A')
     {
         bowTR = fopen("bowA.txt", "w");
     }
@@ -100,7 +109,7 @@ void case2_3(FILE *referencia, FILE *bowTR, int tamanho_dict, int *Cont, /*Le o 
     {
         bowTR = fopen("bowB.txt", "w");
     }
-    gerarBow_Cont(bowTR,Cont,referencia,dict,tamanho_dict); // O(n + a), n = palavras no dicionario, a = palavras no arquivo de referencia
+    gerarBow_Cont(bowTR, Cont, referencia, dict, tamanho_dict); // O(n + a), n = palavras no dicionario, a = palavras no arquivo de referencia
     fclose(bowTR);
 
     *existeTR = 't';
@@ -110,9 +119,9 @@ void case2_3(FILE *referencia, FILE *bowTR, int tamanho_dict, int *Cont, /*Le o 
 }
 
 void case4(int tamanho_dict, int *ContA, int *ContB, /* Exibir BOWs*/
-        char dict[][100], char existeDict, char existeTRA, char existeTRB)
+           char **dict, char existeDict, char existeTRA, char existeTRB)
 
-        // Complexidade total Case 4 - O(n), n = número de palavras no dicionário.
+// Complexidade total Case 4 - O(n), n = nï¿½mero de palavras no dicionï¿½rio.
 {
     printTitulo("Exibir BOWs de TRA e TRB ");
 
@@ -132,18 +141,18 @@ void case4(int tamanho_dict, int *ContA, int *ContB, /* Exibir BOWs*/
         return;
     }
 
-    printaBOWs(ContA,ContB,dict,tamanho_dict);
+    printaBOWs(ContA, ContB, dict, tamanho_dict);
 }
 
 void case5(int tamanho_dict, int *ContA, int *ContB, char existeDict, char existeTRA, char existeTRB)
 /* Distancia Euclidiana (quanto mais proximo de 0, mais similares sao os arquivos)
 
-   Complexidade total Case 5 - O(n), n = número de palavras no dicionario.
+   Complexidade total Case 5 - O(n), n = nï¿½mero de palavras no dicionario.
 */
 {
     double distanciaEuclidiana;
 
-   printTitulo("Exibir similaridade entre os dois textos");
+    printTitulo("Exibir similaridade entre os dois textos");
 
     if (existeDict == 'f')
     {

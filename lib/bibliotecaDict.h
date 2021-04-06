@@ -15,25 +15,25 @@ int contaLinhas(FILE *arquivo) // Conta quatas linhas tem o arquivo
 {
     char c;
     int tamanho = 0;
-    
-    while(!feof(arquivo))
+
+    while (!feof(arquivo))
     {
         c = fgetc(arquivo);
-        if(c == '\n') tamanho++;
+        if (c == '\n')
+            tamanho++;
     }
     rewind(arquivo);
     return tamanho;
 }
 
-
 /*
 criarDict - O(n), n = numero de linhas no dicionario
 */
-void criarDict(FILE *arq, char dict[][100]) // Salva as palavras do dicionario em uma Array de Strings
+void criarDict(FILE *arq, char **dict, int tamanho) // Salva as palavras do dicionario em uma Array de Strings
 {
     int i = 0;
 
-    while(fscanf(arq, "%s", dict[i]) != EOF)
+    while (fscanf(arq, "%s", dict[i]) != EOF)
     {
         formatar(dict[i]);
         fgetc(arq);
